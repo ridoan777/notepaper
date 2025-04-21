@@ -1,0 +1,152 @@
+- How to load default font-size from Database on Livewire Blade Components (LBC).
+- How to dynamically change font-sizes from the LBC.
+- How to store neew/updated font-size to database from LBC.
+- How to retain the updated font-size in LBC after form submit preventing auto changing it to inheritted font-size=16px
+-----------------------------------------------------
+[1] LIVEWIRE CLASS::
+
+   -- EditNote.php:
+
+      <?php
+      namespace App\Livewire;
+
+      use App\Models\Note;
+      use Livewire\Component;
+
+      class EditNote extends Component
+      {	
+         public $id;
+
+         public $font_family = '';
+         public $font_size = '';
+         public $line_height = '';
+
+         public $main_title ='';
+         public $secondary_title = '';
+         public $meta_title = '';
+         public $notes = '';
+
+         public $fetchNoteFromDB = '';
+         
+         public function mount($id = null)
+         {
+            // $this->id = $id;
+            if ($id) {
+               $note = Note::find($id);
+                  if ($note) {
+                     $this->font_family = $note->font_family;
+                     $this->font_size = $note->font_size;
+                     $this->line_height = $note->line_height;
+                     $this->main_title = $note->main_title;
+                     $this->secondary_title = $note->secondary_title;
+                     $this->meta_title = $note->meta_title;
+                     $this->notes = $note->notes;
+                  }
+               }
+            $this->fetchNoteFromDB = Note::all();
+            
+         }
+         // -------------------------------
+         public function updateNote(){
+            // dd("updating = ", $this->font_family, $this->main_title);
+            try {
+               // dd("in try");
+               Note::where('id', $this->id)->update([
+                  'font_family' => $this->font_family,
+                  'font_size' => $this->font_size,
+                  'line_height' => $this->line_height,
+                  //  ------------
+                  'main_title' => $this->main_title,
+                  'secondary_title' => $this->secondary_title,
+                  'meta_title' => $this->meta_title,
+                  'notes' => $this->notes
+               ]);
+      
+               session()->flash('message', 'Note updated successfully!');
+         } catch (\Exception $e) {
+            dd("error part");
+               session()->flash('error', 'Failed to update the note. Please try again.');
+         }
+         }
+         // -------------------------------
+         public function render()
+         {
+            $allNotes = $this->fetchNoteFromDB;
+            return view('livewire.edit-note', compact('allNotes'));
+         }
+      }
+
+
+[2] VIEW HTML::
+
+   -- edit-note.blade:
+
+    <!---- header buttons ---->
+      <select id="updateFontSize" class="dropdownSettings h-8">
+         <option value="" disabled >Font size:</option>
+          @for ($i = 12; $i <= 32; $i += 2)
+            <option onclick="updateFontSize('{{ $i }}px')" @if(str_starts_with($font_size, (string)$i)) selected @endif>{{ $i }}px</option>
+          @endfor
+      </select>
+      
+      <input type="hidden" id="initialFontSize" value="{{ $font_size }}" disabled>
+    <!---- header buttons ---->
+
+    <!---- Main Form ---->
+
+      <form wire:submit="updateNote">
+      
+         <button type="submit" id="submitButton" class="button">Submit
+         </button>
+
+         <input type="text" wire:model="font_family" class="font_family_input">
+         <input type="text" wire:model="font_size" class="font_size_input">
+         <input type="text" wire:model="line_height" class="line_height_input">
+         // it's just for displaying changes, nothing else
+         ... ... ...
+         ... ... ...
+         <textarea wire:model="notes" id="notepad_textarea" class="notepad_textarea bg-gray-900" style="see footnote below"></textarea>
+         ... ... ...
+         ... ... ...
+      </form>
+    <!---- Main Form ---->
+    <!---- Main Form ---->
+   
+   -- adding 'style="font-family: {{ $font_family }}; font-size: {{ $font_size }};"' on textarea works totally fine without all these functions. W/out this, upon saving, font-size will return to its default=16px value.
+
+
+[3] VIEW JAVASCRIPT::
+
+   -- Dynamic font-size function that works when selecting dropdown:
+
+		function updateFontSize(size) {
+			const textarea = document.querySelector('.notepad_textarea');
+			const input = document.querySelector('.font_size_input');
+			if (textarea) {
+				textarea.style.fontSize = size;
+				input.value = size;
+			}
+			input.dispatchEvent(new Event('input', { bubbles: true }));
+		}
+
+   -- DOM Manipulations & Lifecycle hooks:
+
+      function applyInitialFontSize() {
+         const initialSize = document.getElementById('initialFontSize').value;
+         if (initialSize) {
+            updateFontSize(initialSize);
+         }
+      }
+      // Apply font size on regular page load
+      document.addEventListener('DOMContentLoaded', applyInitialFontSize);
+      
+      // Listen for Livewire navigation events
+      document.addEventListener('livewire:navigated', applyInitialFontSize);
+      document.addEventListener('livewire:navigate', applyInitialFontSize);
+      document.addEventListener('livewire:navigating', applyInitialFontSize);
+
+      // Also listen for Livewire loads and updates
+      document.addEventListener('livewire:load', applyInitialFontSize);
+      document.addEventListener('livewire:update', applyInitialFontSize);
+
+-.- 

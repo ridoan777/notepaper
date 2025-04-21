@@ -1,0 +1,578 @@
+
+[0] NOTES:
+
+   -- Livewire blade component codes must be inside one single parent div/element.
+
+      <div>
+         all other html, css, PHP, style, javascript codes
+      </div>
+
+   -- Methods
+      __construct()	mount() //setup logic
+      return view()	render() //display logic
+
+
+[1] Installations: 
+
+   -- Build a fresh laravel app.
+   
+   -- Install Livewire:
+      composer require livewire/livewire
+
+   -- Demo:
+      php artisan make:livewire first-component
+
+      !!!! This will create two files:
+         - Class: app/Http/Livewire/first-component.php
+         - View: resources/views/livewire/first-component.blade.php
+
+   -- php artisan make:livewire Counter
+      
+      !!!! This will create two files:
+      - Class: app/Http/Livewire/first-component.php
+      - View: resources/views/livewire/first-component.blade.php
+
+   -- 
+
+   -- We can install volt to sqeeze the class & component into one file.
+
+
+[2] DEMO:
+
+   -- Go to welcome.blade.php & remove all & m make html:5 fresh page.
+
+   -- in body, add:
+      <livewire:first-component />
+
+   -- DEMO-1::First-Component:
+
+      --- Demo: in first-component.blade.php, if we write:
+
+         <h1>hello world</h1>
+
+         it will be displayed on the welcome page.
+
+      --- DEMO:FirstComponent.php:
+
+      <?php
+         namespace App\Livewire;
+
+         use Livewire\Component;
+
+         class FirstComponent extends Component
+         {
+            public function render()
+            {
+               return view('livewire.first-component');
+            }
+         }
+
+   -- DDEMO-2::Counter:
+
+      --- Counter.php:
+         <?php
+            namespace App\Livewire;
+
+            use Livewire\Component;
+
+            class Counter extends Component
+            {
+               public $count = 3;
+
+               public function render()
+               {
+                  return view('livewire.counter');
+               }
+            }
+         !##! now  we can access this $counter directly in the counter.blade.php component using {{ $count }}
+
+      --- Livewire/counter.blade.php:
+
+         <div>
+            <h1>Hello</h1>
+            {{ $count }}
+         </div>
+
+
+[3] FORM:
+
+   -- Run: php artisan make:livewire bird-form
+
+   -- View: bird-form.blade.php:
+
+      <div>
+         <h2>This is bird form</h2>
+
+         <form wire:submit="submit">
+            <label for="birdCount">Bird Count:</label>
+               <input type="number" wire:model="birdCount">
+            <br>
+            <label for="notes">Notes:</label>
+               <!-- <textarea wire:model="notes"></textarea> -->
+            <br>
+            <button type="submit">Submit</button>
+         </form>
+      </div>
+
+   -- Class: BirdForm.php:
+      <?php
+         namespace App\Livewire;
+
+         use App\Models\Bird;
+         use Livewire\Component;
+
+         class BirdForm extends Component
+         {
+            public int $birdCount;
+            public string $notes;
+
+            public function submit(){
+               Bird::create([
+                     'bird_count' => $this->birdCount,
+                     'notes' => $this->notes
+               ]);
+               $this->reset();
+            }
+
+            public function render()
+            {
+               return view('livewire.bird-form');
+            }
+         }
+
+   -- Make sure to make Model, Migration files too.
+   
+   -- Display Data:
+
+      --- Class: BirdForm.php:
+
+         class BirdForm extends Component
+         {
+            ... ... ...
+            public function render()
+            {
+               return view('livewire.bird-form', [
+                  'entires' => Bird::all()
+               ]);
+            }
+         }  
+
+      --- View: bird-form.blade.php:
+
+         <div>
+            @foreach ($entires as $item)
+               <div wire:key='{{ $item->id }}'>
+                  {{ $item->bird_count }} - {{ $item->notes }}
+               </div>
+            @endforeach
+         </div>
+
+      -- Delete:
+         
+         --- In View file:
+            @foreach ($entires as $item)
+               <div wire:key='{{ $item->id }}'>
+                  {{ $item->bird_count }} - {{ $item->notes }}
+                  <button wire:click='delete({{ $item->id }})'>Delete</button>
+               </div>
+            @endforeach
+         
+         --- In Class file:
+
+            public function delete($id){
+               Bird::find($id)->delete();
+            }
+
+            public function rended(){... ... ...}
+
+
+[4] VALIDATION:
+
+   -- Way-1:The Old way:
+
+      --- Class: BirdForm.php:
+
+         public function submit(){
+            $this->validate([
+               'birdCount' => 'required|integer',
+               'notes' => 'required|string|max:255'
+            ]);
+
+            Bird::create([
+               'bird_count' => $this->birdCount,
+               'notes' => $this->notes
+            ]);
+
+            $this->reset();
+         }
+
+      --- View: bird-form.blade.php:
+
+         @if($errors->any())
+            <div>
+               @foreach ($errors->all() as $error)
+                  <div class="text-red-500">{{ $error }}</div>
+               @endforeach
+         @endif
+
+   -- New Way:Livewire3:
+
+      <?php
+      use Livewire\Attributes\Validate;
+
+      class BirdForm extends Component
+      {
+         #[Validate('required|integer')]
+         public int $birdCount;
+
+         #[Validate('required|string|max:255')]
+         public string $notes;
+
+         public function submit(){
+
+            $this->validate();
+
+            Bird::create([
+               ... ... ...
+            ]);
+
+         }
+      }     
+
+      // in this way, we just define validation one time and no matter what method we call those variables, they will always be validated. 
+
+
+[5] LIFECYCLE HOOKS:
+
+   -- render():
+      It's where we put our display logics like reutrn view().
+
+      public function render()
+      {
+         return view('livewire.bird-form', [
+            'entires' => Bird::all()
+         ]);
+      }
+
+   -- mount():
+      It's the constructor of the class.
+
+      --- Parent blade:
+         <livewire:bird-form :x="3"/>
+
+      --- Child class:
+         public int $birdCount;
+
+         public function mount($x){
+            $this->birdCount = $x;
+         }
+
+         public function render(){... ... ...}
+
+
+[6] EVENTS:
+
+   -- how two different components can communicate with each other.
+
+   -- Make these:
+
+      Classes: SendEvent.php, ReceiveEvent.php
+      Views: send-event.blade.php, receive-event.blade.php
+
+   -- SEND:TEXT
+
+      --- Class: SendEvent.php:
+
+         class SendEvent extends Component
+         {
+            public function sendMssg()
+            {
+               $this->dispatch('messageSent', 'Hello from Livewire!');
+            }
+         }
+
+      --- View: send-event.blade.php:
+         <div>
+            <h1>let's Send Event</h1>
+            <button wire:click='sendMssg'>Send</button>
+         </div>
+
+   -- RECEIVE:TEXT
+
+      --- Class: ReceiveEvent.php:
+
+         class ReceiveEvent extends Component
+         {
+            public string $message = 'No Message';
+            
+            #[On('messageSent')]
+            public function displayMessage($message)
+            {
+               $this->message = $message;
+            }
+         }
+
+      --- View: receive-event.blade.php:
+         <div>
+            <h1>Let's Receive Event</h1>
+            <p>{{ $message }}</p>
+         </div>
+
+   -- SEND:RESET:
+
+      --- Class: SendEvent.php:
+
+         class SendEvent extends Component
+         {
+            public function resetComponent()
+            {
+               $this->dispatch('resetComp');
+            }
+         }
+
+      --- View: send-event.blade.php:
+
+         <button wire:click='resetComponent'>Reset</button>
+
+   -- RECEIVE:RESET:
+
+      --- Class: ReceiveEvent.php:
+
+         class ReceiveEvent extends Component
+         {
+            public string $message = 'No Message';
+
+            #[On('resetComp')]
+            public function resetText()
+            {
+               $this->reset();
+            }
+         }
+
+   -- SEND:PAREMETER/DYNAMIC:
+
+      --- Class: SendEvent.php:
+
+         class SendEvent extends Component
+         {
+            public string $xyz;
+
+            public function sendMssg()
+            {
+               $this->dispatch('messageSent', $this->mesxyzsage);
+            }
+         }    
+
+      --- View: send-event.blade.php:
+
+         <input type="text" wire:model.blur="xyz">
+         <button wire:click='sendMssg'>Send</button>
+
+         // Updates Livewire property only when the input loses focus (on blur)
+
+   -- RECEIVE:PAREMETER/DYNAMIC:
+
+      --- Class: ReceiveEvent.php:
+
+         class ReceiveEvent extends Component
+         {
+            public string $message = 'No Message';
+            
+            #[On('messageSent')]
+            public function displayMessage($newMessage)
+            {
+               $this->message = $newMessage;
+            }
+         }
+
+      --- View: receive-event.blade.php:
+         
+         <p class="text-2xl text-red-500">{{ $message }}</p>
+
+   
+[7] LAZY LOADING:
+
+   -- parent blade:
+
+      <div>
+         Send Event: <livewire:test-page lazy/>
+         Here's some additional information.
+      </div>
+
+      // <livewire:test-page lazy/> will only load when all other elements are loaded
+
+   -- View::test-page.blade.php:
+
+      // write anything
+
+   -- Class::TestPage.php:
+
+         class SendEvent extends Component
+         {
+            public function mount()
+            {
+               sleep(3);
+               // this will make the component load after 3 seconds
+            }
+            
+            public function placeholder()
+            {
+               return <<<'HTML'
+                  <div>
+                        <!-- ...Here we can add spinner/loader codes but have to be careful about indentation. The <div> must be inner indented from 'return' statement.... -->
+                        <svg>...</svg>
+                  </div>
+                  HTML;
+            }
+
+            public function render()
+            {
+               return view('livewire.send-event');
+            }
+         }  
+
+   -- Route Lazy:
+
+      Route::get(/test-page, TestPage::class)->lazy()
+
+      // if we setup a route in web.php where 'TestPage' is a Livewire class.
+
+
+[8] NAVIGATE/ROUTE/LAYOUT:
+
+   -- Make a layout, Run:
+      php artisan livewire:layout
+
+      // this will create an app.blade.php file in 'resources > views > components > layouts > app.blade.php'
+
+   -- Make component pages in 'resources > views > livewire' along with their html, css, js codes.
+
+   -- Make routes for these pages in 'routes/web.php':
+     
+      use App\Livewire\ReceiveEvent;
+      use App\Livewire\SendEvent;
+
+      Route::get('/receive-events', ReceiveEvent::class);
+      Route::get('/send-events', SendEvent::class);
+
+   -- Make Livewire classes:
+
+      --- ReceiveEvent.php:
+
+         <?php
+         namespace App\Livewire;
+         use Livewire\Component;
+
+         class ReceiveEvent extends Component
+         {
+            public function render()
+            {
+               return view('livewire.receive-event');
+            }
+         }        
+
+      --- SendEvent.php:
+
+         <?php
+         namespace App\Livewire;
+         use Livewire\Component;
+
+         class SendEvent extends Component
+         {
+            public function render()
+            {
+               return view('livewire.send-event');
+            }
+         }        
+
+   -- Go to 'resources > components > layout > app.bladel.php':
+
+      <!DOCTYPE html>
+      <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+         <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+            <title>{{ $title ?? 'Page Title' }}</title>
+         </head>
+         <body>
+            <nav>
+               <a href="/receive-events" wire:navigate>receive events</a>
+               <a href="/send-events" wire:navigate>send events</a>
+            </nav>
+
+            {{ $slot }}
+         </body>
+      </html>
+
+
+[9] AUTHENTICATION/MAILER:
+
+   -- Go to 'https://mailtrap.io/home' and register a free account.
+
+   -- Go to 'Email Testing > Start testing > SMTP > PHP (dropdown to Laravel 9+)' & copy the mailer credentials like this:
+
+      MAIL_MAILER=smtp
+      MAIL_HOST=sandbox.smtp.mailtrap.io
+      MAIL_PORT=2525
+      MAIL_USERNAME=7d6ed5752ecfd6
+      MAIL_PASSWORD=109f21db34a05b
+
+   -- Go to '.env' file and comment out all lines with 'MAIL_' prefix.
+
+   -- Add the mailtrap credentials
+
+
+[*] LIVEWIRE HTML DIRECTIVES:
+
+   -- wire:click ::
+         // this will call the addFunction() method in the Counter.php onclick
+
+         <button wire:click="addFunction">Add</button>
+
+   -- wire:model.live ::
+         // this will update the count variable in the Counter.php on input
+
+         <p>{{ $count }}</p>
+         <input type="text" wire:model.live="count">
+         realtime
+
+   -- wire:navigation ::
+      // this will make the navigation realtime without page refresh but a custom reload animaiton at the top
+
+      Route::get('/goto', [TestController::class, 'goto']);
+      <a href="/goto" wire:navigate>Goto</a>
+
+   -- wire:model.blur ::
+      // the input will update the x variable in the SendEvent.php on blur as soon as the user stops typing
+
+      <input type="text" wire:model.blur="x">
+      <button wire:click='sendMssg'>Send</button>
+
+   -- wire:key ::
+      // to bind the element into a div
+
+      @foreach ($entires as $item)
+         <div wire:key='{{ $item->id }}'>
+            ... ... ...
+         </div>
+      @endforeach
+
+   -- wire:transition ::
+      // this will apply fade in/out animation on the elements
+      
+         <div wire:transition>
+      
+      // may not work on list siblings
+
+         @foreach (...)
+            <li wire:transition>...</li>
+         @endforeach
+
+      // use custom properties from here:
+
+         https://livewire.laravel.com/docs/wire-transition/#customizing-transitions
+
+
+
+
