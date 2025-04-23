@@ -18,7 +18,7 @@ return new class extends Migration
 			$table->string('font_size');
 			$table->string('line_height');
 			$table->string('main_title');
-			$table->string('meta_title');
+			$table->string('meta_title')->nullable();
 			$table->string('secondary_title')->nullable();
 			$table->text('notes');
 			$table->timestamps();

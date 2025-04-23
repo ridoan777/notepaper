@@ -24,14 +24,14 @@
 		</style>
 	</head>
 
-	<body class="p-0 bg-gray-200 dark:bg-gray-500">
+	<body class="p-0 bg-gray-100 dark:bg-gray-900">
 
 		<x-partials.navbar/>
-
-		{{ $slot }}
+		<div class="pt-20 p-2">
+			{{ $slot }}
+		</div>
 		
+	@vite(['resources/js/update-note-style.js'])
 	</body>
-
-
 
 </html>

@@ -65,10 +65,20 @@ function initUIComponents() {
        void element.offsetWidth; // Force reflow
        element.classList.add('animate');
    });
+
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC.
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark')
+    }
 }
 
 // Initialize when page first loads
 document.addEventListener('DOMContentLoaded', initUIComponents);
+// document.addEventListener('DOMContentLoaded', funcction () {
+    
+// });
 
 // Reinitialize after every Livewire navigation
 document.addEventListener('livewire:navigated', initUIComponents);

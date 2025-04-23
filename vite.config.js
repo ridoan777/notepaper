@@ -9,7 +9,8 @@ export default defineConfig({
 				'resources/css/app.css',
 				'resources/js/flowbite_3.1.2.js',
 				'resources/js/ui-initializer.js',
-				'resources/js/app.js'
+				'resources/js/app.js',
+				'resources/js/update-note-style.js'
 			],
 			refresh: true,
 		}),

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Coderflex\LaravelTurnstile\Rules\TurnstileCheck;
+use Coderflex\LaravelTurnstile\Facades\LaravelTurnstile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -29,11 +31,13 @@ class AuthController extends Controller
 			'password' => 'required|string|min:4|confirmed', //use 1234
 			'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:512',
 			'terms' => 'required|in:true',
+			'cf-turnstile-response' => ['required', new TurnstileCheck()],
 		], [
 			'name.required' => 'Please Enter Your Name!',
 			'name.max' => 'Name should be maximum 64 characters!',
 			'image.mimes' => 'Allowed image formats: "jpeg, png, jpg, gif, webp" only',
 			'image.max' => 'Image size must be less than 512KB.',
+			"cf-turnstile-response.required" => "The CAPTCHA thinks you are a robot! Please refresh and try again."
 		]);
 		
 		if ($request->hasFile('image'))
@@ -55,7 +59,6 @@ class AuthController extends Controller
 		
 		User::create($validated);
 
-		// Auth::login($user);
 		return redirect()->route('login')->with('success', "Registered successfully!");
 	}
 	// ----------------
@@ -63,7 +66,10 @@ class AuthController extends Controller
 	{
 		$validated = $request->validate([
 			'emailOrUsername' => 'required|string',
-			'password' => 'required|string' //use 1234
+			'password' => 'required|string', //use 1234
+			'cf-turnstile-response' => ['required', new TurnstileCheck()],
+		],[
+			"cf-turnstile-response.required" => "CAPTCHA Error! The CAPTCHA thinks you are a robot! Please refresh and try again."
 		]);
 		
 		$loginInput = $request->input('emailOrUsername');
@@ -81,7 +87,6 @@ class AuthController extends Controller
 			]);
 		}
 		
-		// At this point we know the user exists
 		// Now try to authenticate with the password
 		if (Auth::attempt([
 			  $loginField => $loginInput,
@@ -134,6 +139,7 @@ class AuthController extends Controller
 			}
 		}
 	}
-	
+	// ----------------
+
 	// ----------------
 }
