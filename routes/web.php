@@ -25,5 +25,11 @@ Route::middleware('guest')->controller(AuthController::class)->group(function(){
 Route::middleware('auth')->group(function(){
     Route::get('/', FullList::class)->name('dashboard');
     Route::get('/note', NotePaper::class);
+    Route::get('/create-group', NotePaper::class)->name('create_group');
     Route::get('/note/{id}', EditNote::class);
+    Route::get('/note/delete/{id}', [EditNote::class, 'delete'])->name('delete_note');
 });
+
+/*
+
+*/

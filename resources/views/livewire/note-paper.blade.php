@@ -1,26 +1,28 @@
 <div class="bg-gray-100 dark:bg-gray-900">
 
-	@if(session("success") || $errors->any())
-		<x-partials.alert message="Note Creation Error/s"/>
-	@endif
-	<!--  -->
-	
 	<!-- Alert Area  -->
-	<div class="mb-4" id="messageArea">
-		@if(session('message'))
-		<div class="border border-green-400 text-white px-4 py-3 rounded relative block sm:inline opacity-100" role="alert">
-			{{ session('message') }}
+	<div class="w-full transition-opacity duration-1000" id="messageArea">
+		@if(session('success'))
+		<div class="w-1/3 mx-auto border text-center bg-green-400 border-green-400 text-white px-4 py-3 rounded relative" role="alert">
+			<strong class="font-bold">Success!</strong>
+			<span class="block sm:inline">{{ session('success') }}</span>
 		</div>
 		@endif
-		@if(session('errors'))
-		<ul>
-			<li class="text-blue-500"><b>Error/s:</b></li>
-			@foreach (session('errors') as $error)
-				<li class="text-red-500">{{ $error[0] }}</li>
+		@if(session('error'))
+		<ul class="w-1/3 mx-auto py-1 px-4 bg-red-400">
+			<span class="block sm:inline">{{ session('error') }}</span>
+			@error('create_note_error')
+			<span class="block sm:inline">{{ session('error') }}</span>
+			@enderror
+		</ul>
+		@endif
+		@if($errors->any())
+		<ul class="w-1/3 mx-auto py-1 px-4 bg-red-400">
+			<!-- <li class="text-white text-center text-xl"><b>{{-- $error --}}</b></li> -->
+			@foreach ($errors->all() as $error)
+			<li class="text-white">{{ $error }}</li>
 			@endforeach
 		</ul>
-		@elseif(session('error'))
-		<div class="text-red-500">{{ session('error') }}</div>
 		@endif
 	</div>
 	<!-- Alert Area -->
@@ -33,13 +35,13 @@
 			<!-- Header Buttons -->
 			<div class="mb-4 flex gap-4 justify-between items-center">
 				
-				<div class="headerLeft w-1/3 bg-red-100">
-					<h1 class="text-2xl font-bold text-left">Create a note</h1>
+				<div class="headerLeft w-1/4">
+					<h1 class="ml-2 mb-0 text-2xl font-bold text-left text-indigo-900 dark:text-gray-200">Create a note</h1>
 				</div>
 				<!--  -->
-				<div class="headerRight w-2/3 px-2 flex space-x-4 bg-blue-100">
+				<div class="headerRight w-3/4 px-2 flex space-x-4">
 
-					<Button type="button" id="copyButton" class="button" >
+					<Button type="button" id="copyButton" class="button p-2 rounded hover:bg-gray-200">
 						{!! \App\Helpers\Fontawesome::copy(['class' => 'w-5 h-5 text-gray-500 dark:text-pink-200']) !!}
 					</Button>
 					<!--  -->
@@ -76,6 +78,13 @@
 							<option value="{{ $i }}px">{{ $i }}px</option>
 						@endfor
 					</select>
+					<!--  -->
+					<select id="updateGroup" class="dropdownSettings h-8">
+						<option value="" disabled selected>Groups:</option>
+						@foreach ($userGroups as $group)
+							<option value="{{ $group->id }}">{{ $group->group_name }}</option>
+						@endforeach
+					</select>
 
 				</div>
 				
@@ -89,19 +98,20 @@
 			<form wire:submit.prevent="createNote">
 				
 				<!-- setting region -->
-				 <div class=" gap-4">
-					 <input type="text" wire:model="font_family" class="font_family_input" readonly>
-					 <input type="text" wire:model="font_size" class="font_size_input" readonly>
-					 <input type="text" wire:model="line_height" class="line_height_input" readonly>
-					 <input type="text" wire:model="username" readonly>
+				 <div class="hidden gap-4">
+					<input type="text" wire:model="font_family" class="font_family_input" readonly>
+					<input type="text" wire:model="font_size" class="font_size_input" readonly>
+					<input type="text" wire:model="line_height" class="line_height_input" readonly>
+					<input type="text" wire:model="username" readonly>
+					<input type="text"  wire:model="g_id" class="group_input" readonly>
 				 </div>
 				<!-- setting region -->
 
 				<!-- text region -->
-				<div class="flex justify-between items-center bg-[#FFFFAA]">
+				<div class="mr-2 flex justify-between items-center bg-[#FFFFAA]">
 					<input type="text" wire:model="main_title" class="mainTitle focus:border-0 focus:border-none" placeholder="Title:" id="mainTitle">
 					<!--  -->
-					<button type="submit" id="submitButton" class="noteSaveButton">Submits</button>
+					<button type="submit" id="submitButton" class="noteSaveButton">Save</button>
 				</div>
 				<!--  -->
 				<div class="flex">
@@ -112,29 +122,48 @@
 				<!--  -->
 				<div class="flex stripeArea">
 					<div class="w-[4%] border-e bg-transparent"></div>
-					<textarea wire:model="notes" id="notepad_textarea" class="notepad_textarea"></textarea>
+					<textarea wire:model="notes" id="notepad_textarea" class="notepad_textarea" style=" font-size: {{ $font_size }}; line-height: {{ $line_height }}; font-family: {{ $font_family }}"></textarea>
 					<br>
+					
 				</div>
+				
 						 
 				
 			</form>
+			
 			<!-- Form Area -->
 			 
 		</div>
 
 	 </div>
 	<!-- Main Body -->
+<style>
+	#messageArea {
+		max-height: 200px; /* Initial height guess */
+		overflow: hidden;
+		transition: opacity 1s ease, max-height 1s ease;
+	}
+	#tester {
+		border: 1px solid rgb(203 213 225);
+		border-radius: 0.25rem;
+		/* height: 4rem; */
+		width: 16rem;
+	}
+</style>
 
-	<!-- JS -->
-	<script>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+	const textarea = document.getElementById("notepad_textarea");
+	
+	function updateHeight() {
+		textarea.style.padding = `22px 12px`;
+		textarea.style.height = `400px`; /* for can reset height */
+		textarea.style.height = `${textarea.scrollHeight}px`;
+	}
 
-
-		// ------------------
-	</script>
-
-	<script>
-		// see 'resources/js/update-note-style.js' file to listen events for these f()
-	</script>
-	<!-- JS -->
+	textarea.addEventListener("input", updateHeight);
+	updateHeight();
+	});
+</script>
 
 </div>

@@ -1,4 +1,4 @@
-<div class="mb-4" id="messageArea">
+<div class="transition-opacity duration-1000 opacity-0 hidden" id="messageArea">
 	@if(session('success'))
 	<div class="border text-center bg-green-400 border-green-400 text-white px-4 py-3 rounded relative" role="alert">
 		<strong class="font-bold">Success!</strong>

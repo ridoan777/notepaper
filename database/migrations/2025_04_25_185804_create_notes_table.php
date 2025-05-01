@@ -14,13 +14,17 @@ return new class extends Migration
 		Schema::create('notes', function (Blueprint $table) {
 			$table->id();
 			$table->string('user');
-			$table->string('font_family');
-			$table->string('font_size');
-			$table->string('line_height');
 			$table->string('main_title');
+			$table->foreignId('g_id')->constrained('groups')->onDelete('cascade')->nullable();
+			$table->string('group')->nullable();
+			$table->string('font_family')->nullable();
+			$table->string('font_size')->nullable();
+			$table->string('line_height')->nullable();
+			$table->string('slug');
 			$table->string('meta_title')->nullable();
 			$table->string('secondary_title')->nullable();
 			$table->text('notes');
+			$table->foreign('user')->references('username')->on('users')->onDelete('cascade');
 			$table->timestamps();
 		});
 	}

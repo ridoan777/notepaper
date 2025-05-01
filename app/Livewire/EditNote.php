@@ -2,8 +2,12 @@
 
 namespace App\Livewire;
 
+use App\Models\Group;
 use App\Models\Note;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+
+use function Laravel\Prompts\alert;
 
 class EditNote extends Component
 {	
@@ -19,10 +23,12 @@ class EditNote extends Component
 	public $notes = '';
 
 	public $fetchNoteFromDB = '';
-	
+	public $username;
+	public $userGroups = [];
+
 	public function mount($id = null)
 	{
-		// $this->id = $id;
+		$this->id = $id;
 		if ($id) {
 			$note = Note::find($id);
 				if ($note) {
@@ -35,14 +41,26 @@ class EditNote extends Component
 					$this->notes = $note->notes;
 				}
 			}
-		$this->fetchNoteFromDB = Note::all();
-		
+
+		$this->username = Auth::user()->username;
+		$this->fetchNoteFromDB = Note::where('user', Auth::user()->username)->get();
+		$this->userGroups = Group::where('username', $this->username)->get();
 	}
 	// -------------------------------
 	public function updateNote(){
-		// dd("updating = ", $this->font_family, $this->main_title);
+
+		$validated = $this->validate([
+			'font_family' => 'max:50',
+			'font_size' => 'max:50',
+			'line_height' => 'max:50',
+			'main_title' => 'required|max:56',
+			'secondary_title' => 'required|nullable|max:60',
+			'notes' => 'required|max:2000',
+			'meta_title' => 'required|max:60',
+			'username' => 'required',
+		]);
+
 		try {
-			// dd("in try");
 			Note::where('id', $this->id)->update([
 				 'font_family' => $this->font_family,
 				 'font_size' => $this->font_size,
@@ -54,16 +72,32 @@ class EditNote extends Component
 				 'notes' => $this->notes
 			]);
  
-			session()->flash('message', 'Note updated successfully!');
+			session()->flash('success', 'Note updated successfully!');
 	  } catch (\Exception $e) {
-		dd("error part");
 			session()->flash('error', 'Failed to update the note. Please try again.');
 	  }
 	}
 	// -------------------------------
+	public function delete($id = null)
+	{
+		$noteId = $id ?? $this->id;
+		try {
+			$note = Note::where('id', $noteId);
+			$note->delete();
+			session()->flash('success', 'Note deleted successfully!');
+			return redirect()->route('dashboard');
+		} 
+		catch (\Exception $e) {
+			session()->flash('error', 'Failed to delete the note. Please try again.');
+		}
+	}
+
+	// -------------------------------
 	public function render()
 	{
 		$allNotes = $this->fetchNoteFromDB;
-		return view('livewire.edit-note', compact('allNotes'));
+		$activeNoteId = $this->id;
+		
+		return view('livewire.edit-note', compact('allNotes', 'activeNoteId'));
 	}
 }

@@ -54,7 +54,7 @@ class AuthController extends Controller
 
 			$image->storeAs('user_files', $imageName, 'public');
 
-			$validated['image'] = 'storage/user_files' . $imageName;
+			$validated['image'] = 'storage/user_files/' . $imageName;
 		}
 		
 		User::create($validated);
