@@ -12,6 +12,7 @@ use function Laravel\Prompts\alert;
 class EditNote extends Component
 {	
 	public $id;
+	public $slug;
 
 	public $font_family = '';
 	public $font_size = '';
@@ -26,11 +27,15 @@ class EditNote extends Component
 	public $username;
 	public $userGroups = [];
 
-	public function mount($id = null)
+	public function mount($id = null, $slug = null)
 	{
 		$this->id = $id;
-		if ($id) {
-			$note = Note::find($id);
+		$modifiedSlug = substr($slug, 0, -4);
+		$this->slug = $modifiedSlug;
+		// dd($id, $slug, $modifiedSlug, $this->slug);
+		
+		if ($this->slug) {
+			$note = Note::where('slug', $this->slug)->where('user', Auth::user()->username)->first();
 				if ($note) {
 					$this->font_family = $note->font_family;
 					$this->font_size = $note->font_size;
@@ -39,6 +44,10 @@ class EditNote extends Component
 					$this->secondary_title = $note->secondary_title;
 					$this->meta_title = $note->meta_title;
 					$this->notes = $note->notes;
+				}
+				else{
+					// dd("hello");
+					abort(403, 'Unauthorized access prevented!');
 				}
 			}
 
@@ -78,11 +87,15 @@ class EditNote extends Component
 	  }
 	}
 	// -------------------------------
-	public function delete($id = null)
+	public function delete($id = null, $slug = null)
 	{
-		$noteId = $id ?? $this->id;
+		// $noteId = $id ?? $this->id;
+		$modifiedSlug = substr($slug, 0, -4);
+		$this->slug = $modifiedSlug;
+		dd("before", $slug);
 		try {
-			$note = Note::where('id', $noteId);
+			$note = Note::where('slug', $this->slug)->where('user', Auth::user()->username)->first();
+			dd($note);
 			$note->delete();
 			session()->flash('success', 'Note deleted successfully!');
 			return redirect()->route('dashboard');

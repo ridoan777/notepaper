@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NoteController;
 use App\Livewire\EditNote;
 use App\Livewire\FullList;
 use App\Livewire\NotePaper;
@@ -26,10 +27,10 @@ Route::middleware('auth')->group(function(){
     Route::get('/', FullList::class)->name('dashboard');
     Route::get('/note', NotePaper::class);
     Route::get('/create-group', NotePaper::class)->name('create_group');
-    Route::get('/note/{id}', EditNote::class);
-    Route::get('/note/delete/{id}', [EditNote::class, 'delete'])->name('delete_note');
+    Route::get('/note/{slug}', EditNote::class);
+    Route::get('/note/delete/{slug}', [NoteController::class, 'deleteNote'])->name('delete_note');
 });
 
 /*
-
+forge of empire
 */

@@ -41,7 +41,7 @@
 				<!--  -->
 				<div class="headerRight w-3/4 px-2 flex space-x-4">
 
-					<Button type="button" id="copyButton" class="button p-2 rounded hover:bg-gray-200">
+					<Button type="button" id="copyButton" class="button p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
 						{!! \App\Helpers\Fontawesome::copy(['class' => 'w-5 h-5 text-gray-500 dark:text-pink-200']) !!}
 					</Button>
 					<!--  -->
@@ -85,6 +85,13 @@
 							<option value="{{ $group->id }}">{{ $group->group_name }}</option>
 						@endforeach
 					</select>
+					<x-turnstile-widget 
+						theme="dark"
+						language="en-US"
+						size="normal"
+						callback="callbackFunction"
+						errorCallback="errorCallbackFunction"
+					/>
 
 				</div>
 				
@@ -95,7 +102,7 @@
 			<!-- Header Buttons -->
 
 			<!-- Form Area -->
-			<form wire:submit.prevent="createNote">
+			<form id="noteForm" wire:submit.prevent="createNote">
 				
 				<!-- setting region -->
 				 <div class="hidden gap-4">
@@ -104,11 +111,13 @@
 					<input type="text" wire:model="line_height" class="line_height_input" readonly>
 					<input type="text" wire:model="username" readonly>
 					<input type="text"  wire:model="g_id" class="group_input" readonly>
+					
 				 </div>
 				<!-- setting region -->
 
 				<!-- text region -->
 				<div class="mr-2 flex justify-between items-center bg-[#FFFFAA]">
+					
 					<input type="text" wire:model="main_title" class="mainTitle focus:border-0 focus:border-none" placeholder="Title:" id="mainTitle">
 					<!--  -->
 					<button type="submit" id="submitButton" class="noteSaveButton">Save</button>
@@ -143,27 +152,8 @@
 		overflow: hidden;
 		transition: opacity 1s ease, max-height 1s ease;
 	}
-	#tester {
-		border: 1px solid rgb(203 213 225);
-		border-radius: 0.25rem;
-		/* height: 4rem; */
-		width: 16rem;
-	}
+	/* #notepad_textarea */
+
 </style>
-
-<script>
-	document.addEventListener("DOMContentLoaded", function () {
-	const textarea = document.getElementById("notepad_textarea");
-	
-	function updateHeight() {
-		textarea.style.padding = `22px 12px`;
-		textarea.style.height = `400px`; /* for can reset height */
-		textarea.style.height = `${textarea.scrollHeight}px`;
-	}
-
-	textarea.addEventListener("input", updateHeight);
-	updateHeight();
-	});
-</script>
 
 </div>

@@ -1,5 +1,32 @@
 <div class="px-4">
 	
+	<!-- Alert Area  -->
+		<div class="w-full transition-opacity duration-1000" id="messageArea">
+			@if(session('success'))
+			<div class="w-1/3 mx-auto border text-center bg-green-400 border-green-400 text-white px-4 py-3 rounded relative" role="alert">
+				<strong class="font-bold">Success!</strong>
+				<span class="block sm:inline">{{ session('success') }}</span>
+			</div>
+			@endif
+			@if(session('error'))
+			<ul class="w-1/3 mx-auto py-1 px-4 bg-red-400">
+				<span class="block sm:inline">{{ session('error') }}</span>
+				@error('create_note_error')
+				<span class="block sm:inline">{{ session('error') }}</span>
+				@enderror
+			</ul>
+			@endif
+			@if($errors->any())
+			<ul class="w-1/3 mx-auto py-1 px-4 bg-red-400">
+				<!-- <li class="text-white text-center text-xl"><b>{{-- $error --}}</b></li> -->
+				@foreach ($errors->all() as $error)
+				<li class="text-white">{{ $error }}</li>
+				@endforeach
+			</ul>
+			@endif
+		</div>
+	<!-- Alert Area -->
+
 	<div class="flex justify-between">
 		<h2 class="dark:text-white">All Notes</h2>
 		<!--  -->
@@ -44,16 +71,16 @@
 	</div>
 	<!-- ----------------- -->
 	@if($allGroups->isEmpty())
-		<h5 class="text-gray-500 dark:text-whote">OPPS!! No groups have been created yet!</h5>
+	<h5 class="text-gray-500 dark:text-whote">OPPS!! No groups have been created yet!</h5>
 	@else
-		<div class="mb-5 flex flex-wrap gap-4">
-			@foreach ($allGroups as $index => $item)
-				<div wire:key='{{ $item->id }}' class="w-62 p-4 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer flex" data-url="/note/{{ $item->id }}" onclick="window.location=this.getAttribute('data-url')">
-					<p class="font-bold text-xl">{{ $index+1 }} &nbsp; </p>
-					<p class="font-bold text-xl">{{ $item->group_name }}</p>
-				</div>
-			@endforeach
-		</div>
+	<div class="mb-5 flex flex-wrap gap-4">
+		@foreach ($allGroups as $index => $item)
+			<div wire:key='{{ $item->id }}' class="w-62 p-4 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer flex" data-url="/note/{{ $item->id }}" onclick="window.location=this.getAttribute('data-url')">
+				<p class="font-bold text-xl">{{ $index+1 }} &nbsp; </p>
+				<p class="font-bold text-xl">{{ $item->group_name }}</p>
+			</div>
+		@endforeach
+	</div>
 	@endif
 
 	@if($allNotes->isEmpty())
@@ -63,7 +90,7 @@
 
 	<div class="flex flex-wrap gap-4">
 		@foreach ($allNotes as $item)
-			<div wire:key='{{ $item->id }}' class="w-62 p-4 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer" data-url="/note/{{ $item->id }}" onclick="window.location=this.getAttribute('data-url')">
+			<div wire:key='{{ $item->id }}' class="w-62 p-4 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer" data-url="/note/{{ $item->slug }}{{ substr(now()->timestamp, -4) }}" onclick="window.location=this.getAttribute('data-url')">
 				<p class="font-bold">{{ $item->id }}</p>
 				<p class="font-bold text-xl">{{ $item->main_title }}</p>
 				<p class="font-bold text-base">{{ $item->secondary_title }}</p>

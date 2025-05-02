@@ -90,7 +90,7 @@ window.MyApp.utils = {
 	}
 
 };
-
+// -----------------------------------------------
 window.MyApp.utils.alertMssgArea = function () {
 
 	const msg = document.getElementById('messageArea');
@@ -128,7 +128,58 @@ window.MyApp.utils.alertMssgArea = function () {
 	document.addEventListener('livewire:load', fadeOut);
 };
 
+// -----------------------------------------------
+window.MyApp.utils.textAreaHeightAdjust = function () {
+	const textarea = document.getElementById("notepad_textarea");
 
+	function updateHeight(initialLoad = false) {
+		if (!textarea) {
+			console.log('textarea not found');
+			return;
+		}
+
+		textarea.style.height = 'auto';
+		textarea.style.padding = '22px 12px';
+
+		if (initialLoad || !initialLoad) {
+			// textarea.style.height = `${textarea.scrollHeight}px`;
+			const newHeight = Math.max(400, textarea.scrollHeight);
+			textarea.style.height = `${newHeight}px`;
+		} 
+		// else {
+		// 	const newHeight = Math.max(400, textarea.scrollHeight);
+		// 	textarea.style.height = `${newHeight}px`;
+		// }
+	}
+
+	function initialize() {
+		if (textarea) {
+			setTimeout(() => {
+				updateHeight(true);
+				textarea.addEventListener("input", () => updateHeight(false));
+			}, 50);
+		}
+
+		if (window.Livewire) {
+			Livewire.hook('request', ({ succeed }) => {
+				succeed(() => {
+					setTimeout(() => updateHeight(false), 50);
+				});
+			});
+		}
+
+		if (window.Livewire) {
+			document.addEventListener('livewire:navigated', () => {
+				setTimeout(() => updateHeight(true), 100);
+			});
+		}
+	}
+
+	// Return the initialize function so it can be called externally
+	return initialize;
+};
+
+// -----------------------------------------------
 function initNotePageFeatures() {
 	const copyButtonSelect = document.getElementById('copyButton');
 	const fontFamilySelect = document.getElementById('updateFontFamily');
@@ -176,6 +227,11 @@ function initNotePageFeatures() {
 		copyButtonSelect.addEventListener('click', function () {
 			window.MyApp.utils.getTextCopied();
 		})
+	}
+	// ------------------
+	const initializeTextarea = MyApp.utils.textAreaHeightAdjust();
+	if (typeof initializeTextarea === 'function') {
+		initializeTextarea();
 	}
 	// ------------------
 	MyApp.utils.alertMssgArea();

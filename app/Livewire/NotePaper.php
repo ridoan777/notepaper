@@ -49,7 +49,7 @@ class NotePaper extends Component
 			'username' => 'required',
 		]);
 			
-		$slug = Str::slug(Str::words($this->main_title, 1, ''), '-') . '-' . Auth::id() . '-' . substr(time(), -4);
+		$slug = Str::slug(Str::words($this->main_title, 2, ''), '-') . '%' . Auth::id() . 'n' . substr(time(), -4);
 
 		// $group_name = $validated['g_id'];
 		// $this->group = Group::where('id', $this->g_id)->first()->group_name;
@@ -68,15 +68,15 @@ class NotePaper extends Component
 				'secondary_title' => $this->secondary_title,
 				'notes' => $this->notes,
 			]);
-		// dd($validated, $slug, $var);
-
 
 			session()->flash('success', 'Note created successfully!');
-	  } catch (\Exception $e) {
-			session()->flash('error', 'Failed to create the note. Please try again.');
-			logger()->error('Note creation failed: ' . $e->getMessage());
-			$this->addError('create_note_error', $e->getMessage());
-	  }
+			return redirect()->route('dashboard');
+		}
+		catch (\Exception $e) {
+				session()->flash('error', 'Failed to create the note. Please try again.');
+				logger()->error('Note creation failed: ' . $e->getMessage());
+				$this->addError('create_note_error', $e->getMessage());
+		}
 	}
 
 	// -------------------------------

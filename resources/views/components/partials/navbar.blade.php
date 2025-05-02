@@ -69,7 +69,7 @@
                <a href="/note" wire:navigate class="navButton">Blank Note</a>
             </li>
             <li>
-               <a href="/note/{id}" wire:navigate class="navButton">Edit Note</a>
+               <a href="/note/{id}" wire:navigate class="navButton">Groups</a>
             </li>
          </ul>
       </div>

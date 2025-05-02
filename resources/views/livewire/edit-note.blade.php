@@ -74,7 +74,7 @@
 					</select>
 					<!--  -->
 					<div>
-						<a id="deleteNote" href="{{ route('delete_note', $id) }}">
+						<a id="deleteNote" href="{{ route('delete_note', $slug . substr(now()->timestamp, -4) ) }}">
 							{!! \App\Helpers\Fontawesome::trash(['class' => 'w-5 h-5 text-red-500']) !!}
 						</a>
 					</div>
@@ -89,12 +89,12 @@
 
 			<div class="w-48">
 				@foreach ($allNotes as $index => $item)
-					<a href="/note/{{ $item->id }}" wire:navigate class="leftListInstance {{ $activeNoteId == $item->id ? 'bg-gray-400' : 'bg-orange-300' }} hover:bg-gray-600 hover:text-white">{{ \Illuminate\Support\Str::words($item->main_title, 2, '...') }}</a>
+					<a href="/note/{{ $item->slug }}{{ substr(now()->timestamp, -4) }}" wire:navigate class="leftListInstance {{ $activeNoteId == $item->id ? 'bg-gray-400' : 'bg-orange-300' }} hover:bg-gray-600 hover:text-white">{{ \Illuminate\Support\Str::words($item->main_title, 2, '...') }}</a>
 				@endforeach
 			</div>
 
 		 <!-- Form Area -->
-			<form wire:submit.prevent="updateNote" class="w-full">
+			<form id="noteForm" wire:submit.prevent="updateNote" class="w-full">
 				
 				<!-- setting region -->
 				 <div class="hidden gap-4">
@@ -121,7 +121,7 @@
 				<!--  -->
 				<div class="flex stripeArea">
 					<div class="w-[4%] border-e bg-transparent"></div>
-					<textarea wire:model="notes" id="notepad_textarea" class="notepad_textarea" style="font-size: {{ $font_size }}; line-height: {{ $line_height }}; font-family: {{ $font_family }}"></textarea>
+					<textarea wire:model="notes" id="notepad_textarea" class="notepad_textarea" style=" font-size: {{ $font_size }}; line-height: {{ $line_height }}; font-family: {{ $font_family }}"></textarea>
 					<br>
 				</div>
 						 
@@ -140,5 +140,101 @@
 		transition: opacity 1s ease, max-height 1s ease;
 	}
 </style>
+
+<script>
+	// var textarea = document.getElementById("notepad_textarea");
+
+	// function updateHeight(initialLoad = false) {
+	// 	if (!textarea) return;
+
+	// 	// Reset height first for proper calculation
+	// 	textarea.style.height = 'auto';
+	// 	textarea.style.padding = '22px 12px';
+
+	// 	// On initial load, use full content height without min restriction
+	// 	if (initialLoad) {
+	// 		textarea.style.height = `${textarea.scrollHeight}px`;
+	// 	} else {
+	// 		const newHeight = Math.max(400, textarea.scrollHeight);
+	// 		textarea.style.height = `${newHeight}px`;
+	// 	}
+	// }
+
+	// function initialize() {
+	// 	if (textarea) {
+	// 		setTimeout(() => {
+	// 			updateHeight(true);
+	// 			textarea.addEventListener("input", () => updateHeight(false));
+	// 		}, 50);
+	// 	}
+
+	// 	// Handle Livewire form submission success
+	// 	if (window.Livewire) {
+	// 		Livewire.hook('request', ({ succeed }) => {
+	// 			succeed(() => {
+	// 				setTimeout(() => updateHeight(false), 50);
+	// 			});
+	// 		});
+	// 	}
+	// }
+
+	// document.addEventListener("DOMContentLoaded", initialize);
+
+	// if (window.Livewire) {
+	// 	document.addEventListener('livewire:init', initialize);
+	// 	document.addEventListener('livewire:navigated', () => {
+	// 		setTimeout(() => updateHeight(true), 100);
+	// 	});
+	// }
+</script>
+
+
+
+<script>
+	// var textarea = document.getElementById("notepad_textarea");
+	// var formSubmit = document.getElementById("noteForm");
+
+	// document.addEventListener("DOMContentLoaded", function () {
+		
+	// 	function updateHeight() {
+	// 		textarea.style.padding = `22px 12px`;
+	// 		textarea.style.height = `400px`; /* for can reset height */
+	// 		textarea.style.height = `${textarea.scrollHeight}px`;
+	// 	}
+
+	// 	updateHeight();
+	// 	textarea.addEventListener("input", updateHeight);
+
+	// 	// document.addEventListener('DOMContentLoaded', updateHeight);
+
+	// 	document.addEventListener('livewire:navigated', ()=>{
+	// 		console.log('livewire:navigated 1');
+	// 		updateHeight();
+	// 		formSubmit.addEventListener("submit", updateHeight);
+	// 	});
+	// 	document.addEventListener('livewire:load', ()=>{
+	// 		console.log('livewire:load');
+	// 	});
+	// 	document.addEventListener('livewire:update', ()=>{
+	// 		console.log('livewire:update');
+	// 	});
+	// 	// document.addEventListener('livewire:navigated', updateHeight);
+	// 	// document.addEventListener('livewire:load', updateHeight);
+	// 	// document.addEventListener('livewire:update', updateHeight);
+	// });
+	// document.addEventListener('DOMContentLoaded', ()=>{
+	// 	console.log('DOMContentLoaded 2');
+	// });
+	// document.addEventListener('livewire:navigated', ()=>{
+	// 	console.log('livewire:navigated 2');
+	// });
+	// document.addEventListener('livewire:load', ()=>{
+	// 	console.log('livewire:load');
+	// });
+	// document.addEventListener('livewire:update', ()=>{
+	// 	console.log('livewire:update');
+	// });
+	
+</script>
 
 </div>
