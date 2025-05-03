@@ -90,16 +90,16 @@
 			<div id="accordion-collapse" data-accordion="open">
 				@foreach ($allGroups as $index => $item)
 				<div class="mb-10">
-					<h3 id="accordion-collapse-heading-{{ $index+1 }}">
+					<h4 id="accordion-collapse-heading-{{ $index+1 }}">
 						<button type="button" class="accordionButton" data-accordion-target="#accordion-collapse-body-{{ $index+1 }}" aria-expanded="false" aria-controls="accordion-collapse-body-{{ $index+1 }}">
-							<span class="capitalize {{ $index%2==0 ? 'dark:text-red-500' : 'dark:text-blue-500' }}">{{ $item->group_name }} ({{ $allNotes->where('g_id', $item->id)->count() }})</span>
+							<span class="capitalize {{ $index%2==0 ? 'text-red-700 dark:text-amber-500' : 'text-blue-700 dark:text-fuchsia-600' }}">{{ $item->group_name }} ({{ $allNotes->where('g_id', $item->id)->count() }})</span>
 							
 							<i data-accordion-icon>
 								{!! \App\Helpers\Fontawesome::arrowUp(['class' => 'w-3 h-3 rotate-180 shrink-0 text-gray-500 dark:text-gray-50']) !!}
 							</i>
 
 						</button>
-					</h3>
+					</h4>
 					<!--  -->
 					<div id="accordion-collapse-body-{{ $index+1 }}" class="hidden" aria-labelledby="accordion-collapse-heading-{{ $index+1}}">
 						<div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
@@ -116,11 +116,13 @@
 								@foreach ($allNotes as $i => $note)
 									@if($note->g_id == $item->id)
 										@php $counter++; @endphp
-									<div wire:key='{{ $note->id }}' class="w-62 p-4 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer" data-url="/note/{{ $note->slug }}{{ substr(now()->timestamp, -4) }}" onclick="window.location=this.getAttribute('data-url')">
-										<p class="font-bold">{{ $i }}</p>
-										<p class="font-bold text-xl">{{ $note->main_title }}</p>
-										<p class="font-bold text-base">{{ $note->secondary_title }}</p>
-										<p class="white-space-pre text-sm text-gray-500">{!! (e(Str::limit($note->notes, 40, '...'))) !!}</p>
+									<div wire:key='{{ $note->id }}' class="w-62 px-4 pt-4 pb-8 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer" data-url="/note/{{ $note->slug }}{{ substr(now()->timestamp, -4) }}" onclick="window.location=this.getAttribute('data-url')">
+
+										<p class="font-light text-xs text-right italic">{{ $note->created_at->format('d-M-Y \a\t h:i A')}}</p>
+										<p class="my-2 font-bold text-xl">{{ Str::limit(implode(' ', array_slice(explode(' ', $note->main_title), 0, 4)), 20, '...')}}</p>
+										<p class="font-bold text-base text-gray-600">{{ Str::limit(implode(' ', array_slice(explode(' ', $note->secondary_title), 0, 4)), 24, '...')}}</p>
+										<p class="mt-2 white-space-pre text-sm text-gray-500">{!! (e(Str::limit($note->notes, 40, '...'))) !!}</p>
+
 									</div>
 									@endif
 								@endforeach
@@ -140,7 +142,7 @@
 
 		<!-- Accordion For NonCategorized -->
 		<div id="nonCat-accordion-collapse" data-accordion="open">
-			<h3 id="nonCat-accordion-collapse-heading-0">
+			<h4 id="nonCat-accordion-collapse-heading-0">
 				<button type="button" class="accordionButton" data-accordion-target="#nonCat-accordion-collapse-body-0" aria-expanded="false" aria-controls="nonCat-accordion-collapse-body-0">
 					<span class="capitalize">Uncategorized ({{ $checkNonCategory->count() }})</span>
 					
@@ -149,22 +151,25 @@
 					</i>
 
 				</button>
-			</h3>
+			</h4>
 			<!--  -->
 			<div id="nonCat-accordion-collapse-body-0" class="hidden" aria-labelledby="nonCat-accordion-collapse-heading-0">
 				<div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-					@if($allNotes->isEmpty())
-						<h5 class="text-gray-500 dark:text-whote">OPPS!! No notes have been created yet!</h5>
+					@if($checkNonCategory->count() == 0)
+						<h5 class="text-gray-500 dark:text-whote">Empty Group!</h5>
 					@else
 					<div class="flex flex-wrap gap-4">
 
 						@if($checkNonCategory->isNotEmpty())
 						@foreach ($checkNonCategory as $i => $note)
-							<div wire:key='{{ $note->id }}' class="w-62 p-4 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer" data-url="/note/{{ $note->slug }}{{ substr(now()->timestamp, -4) }}" onclick="window.location=this.getAttribute('data-url')">
-								<p class="font-bold">{{ $i }}</p>
-								<p class="font-bold text-xl">{{ $note->main_title }}</p>
-								<p class="font-bold text-base">{{ $note->secondary_title }}</p>
-								<p class="white-space-pre text-sm text-gray-500">{!! (e(Str::limit($note->notes, 40, '...'))) !!}</p>
+							<div wire:key='{{ $note->id }}' class="w-62 px-4 pt-4 pb-8 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer" data-url="/note/{{ $note->slug }}{{ substr(now()->timestamp, -4) }}" onclick="window.location=this.getAttribute('data-url')">
+
+								<p class="font-light text-xs text-right italic">{{ $note->created_at->format('d-M-Y \a\t h:i A')}}</p>
+								<p class="my-2 font-bold text-xl">{{ Str::limit(implode(' ', array_slice(explode(' ', $note->main_title), 0, 4)), 20, '...')}}</p>
+								<p class="font-bold text-base text-gray-600">{{ Str::limit(implode(' ', array_slice(explode(' ', $note->secondary_title), 0, 4)), 24, '...')
+								}}</p>
+								<p class="mt-2 white-space-pre text-sm text-gray-500">{!! (e(Str::limit($note->notes, 40, '...'))) !!}</p>
+
 							</div>
 						@endforeach
 						@endif

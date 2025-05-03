@@ -81,8 +81,8 @@ class EditNote extends Component
 				 'font_size' => $this->font_size,
 				 'line_height' => $this->line_height,
 				 'username' => $this->username,
-				 'g_id' => $this->g_id ?: null,
-				 'group' => $this->g_id ? Group::where('id', $validated['g_id'])->first()->value('group_name') : null,
+				 'g_id' => $this->g_id === 'uncategorized' ? null : $this->g_id,
+				 'group' => $this->g_id === 'uncategorized' ? 'uncategorized' : Group::where('id', $validated['g_id'])->first()->value('group_name'),
 				//  ------------
 				 'main_title' => $this->main_title,
 				 'secondary_title' => $this->secondary_title,
