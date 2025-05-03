@@ -13,7 +13,7 @@ return new class extends Migration
 	{
 		Schema::create('notes', function (Blueprint $table) {
 			$table->id();
-			$table->string('user');
+			$table->string('username');
 			$table->string('main_title');
 			$table->foreignId('g_id')->constrained('groups')->onDelete('cascade')->nullable();
 			$table->string('group')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
 			$table->string('meta_title')->nullable();
 			$table->string('secondary_title')->nullable();
 			$table->text('notes');
-			$table->foreign('user')->references('username')->on('users')->onDelete('cascade');
+			$table->foreign('username')->references('username')->on('users')->onDelete('cascade');
 			$table->timestamps();
 		});
 	}

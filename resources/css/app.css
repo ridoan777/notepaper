@@ -61,6 +61,10 @@
 		@apply cursor-pointer hover:cursor-pointer;
 	}
 
+	.accordionButton{
+		@apply flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl dark:border-gray-700  hover:bg-gray-100 dark:hover:bg-gray-800 gap-3 cursor-pointer;
+	}
+
 	/* ---Note Page Layout--- */
 	.leftListInstance {
 		@apply w-full my-1 px-4 py-1 block rounded-tl-[50px] text-xs;

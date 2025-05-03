@@ -2,16 +2,24 @@
 	<!-- Alert Area  -->
 	<div class="w-full transition-opacity duration-1000" id="messageArea">
 		@if(session('success'))
-		<div class="w-1/3 mx-auto border text-center bg-green-400 border-green-400 text-white px-4 py-3 relative rounded-lg" role="alert">
+		<div class="w-1/3 mx-auto border text-center bg-green-400 border-green-400 text-white px-4 py-3 rounded relative" role="alert">
 			<strong class="font-bold">Success!</strong>
-			<span class="block sm:inline" id="successMssg">{{ session('success') }}</span>
+			<span class="block sm:inline">{{ session('success') }}</span>
 		</div>
 		@endif
+		@if(session('error'))
+		<ul class="w-1/3 mx-auto py-1 px-4 bg-red-400">
+			<span class="block sm:inline">{{ session('error') }}</span>
+			@error('error')
+			<span class="block sm:inline">{{ session('error') }}</span>
+			@enderror
+		</ul>
+		@endif
 		@if($errors->any())
-		<ul class="w-1/3 mx-auto py-1 px-4 bg-red-400 rounded-lg">
-			<li class="text-white text-center text-xl"><b>Validation Error/s:</b></li>
+		<ul class="w-1/3 mx-auto py-1 px-4 bg-red-400">
+			<!-- <li class="text-white text-center text-xl"><b>{{-- $error --}}</b></li> -->
 			@foreach ($errors->all() as $error)
-			<li class="text-white text-center" id="errorMssg">{{ $error }}</li>
+			<li class="text-white">{{ $error }}</li>
 			@endforeach
 		</ul>
 		@endif
@@ -70,7 +78,8 @@
 						<option value="" disabled selected>Groups:</option>
 						@foreach ($userGroups as $group)
 							<option value="{{ $group->id }}">{{ $group->group_name }}</option>
-						@endforeach
+							@endforeach
+							<option value="uncategorized">Unlink Group</option>
 					</select>
 					<!--  -->
 					<div>
@@ -97,7 +106,7 @@
 			<form id="noteForm" wire:submit.prevent="updateNote" class="w-full">
 				
 				<!-- setting region -->
-				 <div class="hidden gap-4">
+				 <div class=" gap-4">
 					<input type="text" wire:model="font_family" class="font_family_input" readonly>
 					<input type="text" wire:model="font_size" class="font_size_input" readonly>
 					<input type="text" wire:model="line_height" class="line_height_input" readonly>
@@ -187,7 +196,6 @@
 	// 	});
 	// }
 </script>
-
 
 
 <script>

@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class NotePaper extends Component
 {
-	public $user = '';
+	// public $user = '';
 
 	public $font_family = '';
 	public $font_size = '';
@@ -26,6 +26,8 @@ class NotePaper extends Component
 	public $userGroups = [];
 
 	public $username;
+	public $cf_token;
+
 
 	// -------------------------------
 	public function mount()
@@ -40,30 +42,38 @@ class NotePaper extends Component
 			'font_family' => 'max:50',
 			'font_size' => 'max:50',
 			'line_height' => 'max:50',
+			'g_id' => 'nullable|max:50',
 			'group' => 'nullable|max:32',
+			'username' => 'required',
+			// ------------
 			'main_title' => 'required|max:56',
 			'secondary_title' => 'required|max:60',
 			'notes' => 'required|max:2000',
-			// 'meta_title' => 'required|max:60',
 			'meta_title' => 'nullable',
-			'username' => 'required',
 		]);
+		// dd($validated['g_id']);
 			
 		$slug = Str::slug(Str::words($this->main_title, 2, ''), '-') . '%' . Auth::id() . 'n' . substr(time(), -4);
 
-		// $group_name = $validated['g_id'];
-		// $this->group = Group::where('id', $this->g_id)->first()->group_name;
-
+		if($validated['g_id'] != null){
+			$this->group = Group::where('id', $this->g_id)->first()->group_name;
+		}
+		else{
+			$this->group = "uncategorized";
+		}
+		// dd($this->g_id, $this->group);
 		try {
 			$var = Note::create([
-				'user' => $this->username,
+				'username' => $this->username,
 				'main_title' => $this->main_title,
 				'g_id' => $this->g_id ?: null,
-				'group' => $this->group ?: null,
+				// 'group' => $this->group ?: null,
+				'group' => $this->group,
+				'slug' => $slug,
 				'font_family' => $this->font_family,
 				'font_size' => $this->font_size,
 				'line_height' => $this->line_height,
-				'slug' => $slug,
+				// --------------------------
 				'meta_title' => $this->meta_title,
 				'secondary_title' => $this->secondary_title,
 				'notes' => $this->notes,

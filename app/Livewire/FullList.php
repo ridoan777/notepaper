@@ -15,7 +15,7 @@ class FullList extends Component
 	// -------------------------------
 	public function mount()
 	{
-		$this->user = Auth::user();
+		$this->user = Auth::user()->username;
 	}
 	// -------------------------------
 	public function createGroup(){
@@ -29,8 +29,8 @@ class FullList extends Component
 		try {
 			$var = Group::create([
 				'group_name' => $this->group_name,
-				'user_id' => $this->user->id,
-				'username' => $this->user->username,
+				'user_id' => Auth::user()->id,
+				'username' => $this->user,
 			]);
 
 			session()->flash('success', 'Group created successfully!');
@@ -42,8 +42,13 @@ class FullList extends Component
 	// --------------------------
 	public function render()
 	{
-		$allNotes = Note::where('user', Auth::user()->username)->get();
-		$allGroups = Group::where('username', $this->user->username)->get();
-		return view('livewire.full-list', compact('allNotes', 'allGroups'));
+		$allNotes = Note::where('username', Auth::user()->username)->get();
+		$checkNonCategory = Note::where('g_id', null)->where('username', Auth::user()->username)->get();
+		// dd($checkNonCategory->count());
+		$allGroups = Group::where('username', $this->user)->get();
+		return view('livewire.full-list', compact('allNotes', 'allGroups', 'checkNonCategory'));
 	}
 }
+// @php
+// $filterNotes = App\Models\Note::where('g_id', $item->id)->where('username', Auth::user()->username)->get();
+// @endphp

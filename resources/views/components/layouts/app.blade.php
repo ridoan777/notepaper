@@ -5,10 +5,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	   <script src="{{ asset('js/jquery-3.7.1-min.js') }}"></script>
+		<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 		@vite(['resources/css/app.css', 'resources/js/flowbite_3.1.2.js', 'resources/js/ui-initializer.js', 'resources/js/app.js'])
 
-		<title>{{ $title ?? 'Page Title' }}</title>
+		<title>{{ $title ?? 'NotePaper' }}</title>
 
 		<style scoped>
 			.navigation{

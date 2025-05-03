@@ -85,13 +85,6 @@
 							<option value="{{ $group->id }}">{{ $group->group_name }}</option>
 						@endforeach
 					</select>
-					<x-turnstile-widget 
-						theme="dark"
-						language="en-US"
-						size="normal"
-						callback="callbackFunction"
-						errorCallback="errorCallbackFunction"
-					/>
 
 				</div>
 				
@@ -110,17 +103,19 @@
 					<input type="text" wire:model="font_size" class="font_size_input" readonly>
 					<input type="text" wire:model="line_height" class="line_height_input" readonly>
 					<input type="text" wire:model="username" readonly>
-					<input type="text"  wire:model="g_id" class="group_input" readonly>
+					<input type="text" wire:model="g_id" class="group_input" readonly>
 					
 				 </div>
 				<!-- setting region -->
 
 				<!-- text region -->
 				<div class="mr-2 flex justify-between items-center bg-[#FFFFAA]">
-					
+
+					<!--  -->
 					<input type="text" wire:model="main_title" class="mainTitle focus:border-0 focus:border-none" placeholder="Title:" id="mainTitle">
 					<!--  -->
 					<button type="submit" id="submitButton" class="noteSaveButton">Save</button>
+
 				</div>
 				<!--  -->
 				<div class="flex">
@@ -155,5 +150,6 @@
 	/* #notepad_textarea */
 
 </style>
+
 
 </div>

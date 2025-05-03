@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Note extends Model
 {
 	use HasFactory;
-	protected $fillable = ['user', 'g_id', 'group', 'font_family', 'font_size', 'line_height', 'main_title', 'secondary_title', 'meta_title', 'slug', 'notes'];
+	protected $fillable = ['username', 'g_id', 'group', 'font_family', 'font_size', 'line_height', 'main_title', 'secondary_title', 'meta_title', 'slug', 'notes'];
 
 	public function userForNotes()
 	{
-		return $this->belongsTo(User::class, 'user', 'username');
+		return $this->belongsTo(User::class, 'username', 'username');
 		// Note::user will receive User::username
 	}
 

@@ -12,7 +12,7 @@ class NoteController extends Controller
 		$modifiedSlug = substr($slug, 0, -4);
 		
 		try {
-			$note = Note::where('slug', $modifiedSlug)->where('user', Auth::user()->username)->first();
+			$note = Note::where('slug', $modifiedSlug)->where('username', Auth::user()->username)->first();
 			$title = $note->main_title;
 			$note->delete();
 
