@@ -26,18 +26,19 @@ class EditNote extends Component
 	public $fetchNoteFromDB = '';
 	public $username;
 	public $g_id = '';
+	public $group = '';
 	public $userGroups = [];
 
 	public function mount($id = null, $slug = null)
 	{
-		$this->id = $id;
+		// $this->id = $id;
 		$modifiedSlug = substr($slug, 0, -4);
 		$this->slug = $modifiedSlug;
-		// dd($id, $slug, $modifiedSlug, $this->slug);
 		
 		if ($this->slug) {
 			$note = Note::where('slug', $this->slug)->where('username', Auth::user()->username)->first();
 				if ($note) {
+					$this->id = $note->id;
 					$this->font_family = $note->font_family;
 					$this->font_size = $note->font_size;
 					$this->line_height = $note->line_height;
@@ -49,7 +50,6 @@ class EditNote extends Component
 					$this->g_id = $note->g_id;
 				}
 				else{
-					// dd("hello");
 					abort(403, 'Unauthorized access prevented!');
 				}
 			}
@@ -74,6 +74,13 @@ class EditNote extends Component
 			'notes' => 'required|max:2000',
 		]);
 
+		if($validated['g_id'] != null && $validated['g_id'] != 'uncategorized'){
+			$this->group = Group::where('id', $this->g_id)->first()->group_name;
+		}
+		else{
+			$this->group = "uncategorized";
+		}
+
 		try {
 			// Note::where('slug', $this->slug)->update($validated);
 			Note::where('slug', $this->slug)->update([
@@ -82,7 +89,7 @@ class EditNote extends Component
 				 'line_height' => $this->line_height,
 				 'username' => $this->username,
 				 'g_id' => $this->g_id === 'uncategorized' ? null : $this->g_id,
-				 'group' => $this->g_id === 'uncategorized' ? 'uncategorized' : Group::where('id', $validated['g_id'])->first()->value('group_name'),
+				 'group' => $this->group,
 				//  ------------
 				 'main_title' => $this->main_title,
 				 'secondary_title' => $this->secondary_title,
@@ -98,8 +105,14 @@ class EditNote extends Component
 	public function render()
 	{
 		$allNotes = $this->fetchNoteFromDB;
+		$currentGroup = Note::where('slug', $this->slug)->where('username', $this->username)->value('group');
+		$fetchCurrentGroup = Note::where('group', $currentGroup)->where('username', $this->username)->get();
+
 		$activeNoteId = $this->id;
+		$allGroups = Group::where('username', $this->username)->where('group_name', '!=', $currentGroup)->get();
 		
-		return view('livewire.edit-note', compact('allNotes', 'activeNoteId'));
+		$noncategorized = Note::where('g_id', null)->where('username', $this->username)->get();
+		
+		return view('livewire.edit-note', compact('allNotes', 'currentGroup', 'activeNoteId', 'allGroups', 'fetchCurrentGroup', 'noncategorized'));
 	}
 }

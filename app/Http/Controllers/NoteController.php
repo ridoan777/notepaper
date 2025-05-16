@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,5 +27,23 @@ class NoteController extends Controller
 			session()->flash('error', 'Failed to delete the note. Please try again.');
 		}
 	
+	}
+	// ----------------------
+	public function deleteGroup($id){
+		
+		try {
+			$group = Group::where('id', $id)->where('username', Auth::user()->username)->first();
+			$title = $group->group_name;
+			$group->delete();
+
+			session()->flash('success', 'Group "' . $title . '" deleted successfully!');
+			return redirect()->route('overview');
+		}
+		catch (\Error $e) {
+			abort(403, "Unauthorized access prevented! \n You can only try but continuous attempts of trespassing might result in account termination!");
+	  	}
+		catch (\Exception $e) {
+			session()->flash('error', 'Failed to delete the group. Please try again.');
+		}
 	}
 }

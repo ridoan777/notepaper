@@ -27,14 +27,21 @@
 		</div>
 	<!-- Alert Area -->
 
-	<div class="flex justify-between">
+	<div class="mt-4 px-4 flex justify-between">
 		<h2 class="dark:text-white">All Notes</h2>
 		<!--  -->
 
-		<!-- Modal toggle -->
-		<button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="saveButton" type="button">
-			{!! \App\Helpers\Fontawesome::plus(['class' => 'w-5 h-5 text-gray-200']) !!}
-		</button>
+		<!-- Modal toggle button-->
+			<button data-modal-target="authentication-modal" data-tooltip-target="accordionTooltip" 
+			data-tooltip-style="{light|dark}" data-tooltip-placement="left" data-modal-toggle="authentication-modal" class="saveButton" type="button">
+				{!! \App\Helpers\Fontawesome::plus(['class' => 'w-5 h-5 text-gray-200']) !!}
+			</button>
+			<!--  -->
+			<div id="accordionTooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-400 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
+				Create Group
+				<div class="tooltip-arrow" data-popper-arrow></div>
+			</div>
+		<!-- Modal toggle button-->
 
 		<!-- Main modal -->
 		<div id="authentication-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -70,16 +77,7 @@
 	<!-- ----------------- -->
 	<div class="p-4 overflow-hidden">
 		@if($allGroups->isEmpty())
-		<h5 class="text-gray-500 dark:text-whote">OPPS!! No groups have been created yet!</h5>
-		@else
-		<div class="mb-10 flex flex-wrap gap-4">
-			@foreach ($allGroups as $index => $item)
-				<div wire:key='{{ $item->id }}' class="w-62 p-4 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer flex" data-url="/note/{{ $item->id }}" onclick="window.location=this.getAttribute('data-url')">
-					<p class="font-bold text-xl">{{ $index+1 }} &nbsp; </p>
-					<p class="font-bold text-xl">{{ $item->group_name }}</p>
-				</div>
-			@endforeach
-		</div>
+			<h5 class="text-gray-500 dark:text-whote">OPPS!! No groups have been created yet!</h5>
 		@endif
 		<!-- ----------------- -->
 		@if($allGroups->isEmpty() && $allNotes->isEmpty())
@@ -89,10 +87,10 @@
 		@if($allGroups->isNotEmpty() && $allNotes->isNotEmpty())
 			<div id="accordion-collapse" data-accordion="open">
 				@foreach ($allGroups as $index => $item)
-				<div class="mb-10">
+				<div class="mb-6">
 					<h4 id="accordion-collapse-heading-{{ $index+1 }}">
 						<button type="button" class="accordionButton" data-accordion-target="#accordion-collapse-body-{{ $index+1 }}" aria-expanded="false" aria-controls="accordion-collapse-body-{{ $index+1 }}">
-							<span class="capitalize {{ $index%2==0 ? 'text-red-700 dark:text-amber-500' : 'text-blue-700 dark:text-fuchsia-600' }}">{{ $item->group_name }} ({{ $allNotes->where('g_id', $item->id)->count() }})</span>
+							<span class="capitalize {{ $index%2==0 ? 'text-red-700 dark:text-amber-400' : 'text-blue-700 dark:text-emerald-400' }}">{{ $item->group_name }} ({{ $allNotes->where('g_id', $item->id)->count() }})</span>
 							
 							<i data-accordion-icon>
 								{!! \App\Helpers\Fontawesome::arrowUp(['class' => 'w-3 h-3 rotate-180 shrink-0 text-gray-500 dark:text-gray-50']) !!}
@@ -113,7 +111,7 @@
 							<div class="flex flex-wrap gap-4">
 								@php $counter = 0; @endphp
 
-								@foreach ($allNotes as $i => $note)
+								@foreach ($allNotes->reverse() as $i => $note)
 									@if($note->g_id == $item->id)
 										@php $counter++; @endphp
 									<div wire:key='{{ $note->id }}' class="w-62 px-4 pt-4 pb-8 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer" data-url="/note/{{ $note->slug }}{{ substr(now()->timestamp, -4) }}" onclick="window.location=this.getAttribute('data-url')">
@@ -161,7 +159,7 @@
 					<div class="flex flex-wrap gap-4">
 
 						@if($checkNonCategory->isNotEmpty())
-						@foreach ($checkNonCategory as $i => $note)
+						@foreach ($checkNonCategory->reverse() as $i => $note)
 							<div wire:key='{{ $note->id }}' class="w-62 px-4 pt-4 pb-8 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer" data-url="/note/{{ $note->slug }}{{ substr(now()->timestamp, -4) }}" onclick="window.location=this.getAttribute('data-url')">
 
 								<p class="font-light text-xs text-right italic">{{ $note->created_at->format('d-M-Y \a\t h:i A')}}</p>

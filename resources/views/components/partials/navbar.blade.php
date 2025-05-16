@@ -34,12 +34,15 @@
             <div class="px-4 py-3">
                <span class="block text-sm text-gray-900 dark:text-white">{{ Auth::user()->name }}</span>
                <span class="block text-sm text-gray-500 truncate dark:text-gray-400">{{ Auth::user()->email }}</span>
-               <span class="block text-sm text-gray-500 truncate dark:text-gray-400">{{ Auth::user()->username }}</span>
+               <span class="block text-sm text-blue-500 truncate">@ {{ Auth::user()->username }}</span>
             </div>
             <!--  -->
             <ul class="py-2" aria-labelledby="user-menu-button">
                <li>
                   <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
+               </li>
+               <li>
+                  <span class="block px-4 py-1 text-xs text-gray-700 dark:text-gray-200 dark:hover:text-white">Beta version: 1.0.1</span>
                </li>
                @endif
                <li>
@@ -69,7 +72,8 @@
                <a href="/note" wire:navigate class="navButton">Blank Note</a>
             </li>
             <li>
-               <a href="/note/{id}" wire:navigate class="navButton">Groups</a>
+               <!-- <a href="/note/{id}" wire:navigate class="navButton">Group</a> -->
+               <a href="/overview/" wire:navigate class="navButton">Overview</a>
             </li>
          </ul>
       </div>

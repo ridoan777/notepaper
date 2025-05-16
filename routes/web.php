@@ -5,6 +5,7 @@ use App\Http\Controllers\NoteController;
 use App\Livewire\EditNote;
 use App\Livewire\FullList;
 use App\Livewire\NotePaper;
+use App\Livewire\Overview;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/welcome', function () {
@@ -28,7 +29,9 @@ Route::middleware('auth')->group(function(){
     Route::get('/note', NotePaper::class);
     Route::get('/create-group', NotePaper::class)->name('create_group');
     Route::get('/note/{slug}', EditNote::class);
+    Route::get('/overview', Overview::class)->name('overview');
     Route::get('/note/delete/{slug}', [NoteController::class, 'deleteNote'])->name('delete_note');
+    Route::get('/group/delete/{gid}', [NoteController::class, 'deleteGroup']);
 });
 
 /*

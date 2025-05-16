@@ -61,13 +61,31 @@
 		@apply cursor-pointer hover:cursor-pointer;
 	}
 
+	.text{
+		@apply text-gray-800 dark:text-gray-300;
+	}
+
 	.accordionButton{
-		@apply flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl dark:border-gray-700 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 gap-3 cursor-pointer;
+		@apply flex items-center justify-between w-full px-5 py-2 font-medium text-lg rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl dark:border-gray-700 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 gap-3 cursor-pointer;
+	}
+
+	.noteSettings{
+		@apply text-xs text-gray-500 text-center italic;
 	}
 
 	/* ---Note Page Layout--- */
-	.leftListInstance {
+	.leftListInstanceNote {
 		@apply w-full my-1 px-4 py-1 block rounded-tl-[50px] text-xs;
+	}
+
+	.leftListInstanceGroup {
+		@apply w-full my-1 px-4 py-1 block rounded-t-[50px] text-xs cursor-pointer capitalize;
+		color: black !important;
+	}
+	.leftListInstanceGroup:hover,
+	.leftListInstanceGroup:active,
+	.leftListInstanceGroup:focus {
+		color: white !important;
 	}
 
 	#updateFontSize, .dropdownSettings {
