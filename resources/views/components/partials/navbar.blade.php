@@ -42,7 +42,7 @@
                   <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
                </li>
                <li>
-                  <span class="block px-4 py-1 text-xs text-gray-700 dark:text-gray-200 dark:hover:text-white">Beta version: 1.0.1</span>
+                  <span class="block px-4 py-1 text-xs text-gray-700 dark:text-gray-200 dark:hover:text-white">Beta version: 1.0.2</span>
                </li>
                @endif
                <li>
