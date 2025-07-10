@@ -41,7 +41,7 @@ Its features include:
 
 ## Contributor
 
-The solo contributor of this project is : **[Ridoan Kabir](https://laravel.com/docs/contributions)**.
+The solo contributor of this project is : **[Ridoan Kabir](https://www.linkedin.com/in/ridoankabir/)**.
 
 See his other works: **[Github](https://github.com/ridoan777)**
 
