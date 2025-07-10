@@ -5,7 +5,7 @@
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 8px">
     <b style="font-size: 18px; text-align: center;"> 
-        Visit Live-Site at :
+        Visit Live Site at :
     </b> 
     <span> 
         <a href="https://www.notepaper.ridoan.com" style="font-size: 16px;">Notepaper</a>
@@ -15,17 +15,19 @@
 
 ## About This Project
 
-Notepaper is a multi-user cloud-based note management Single-Page Application (SPA). It's :
+Notepaper is a multi-user cloud-based note management Single-Page Application (SPA). 
 
-- Simple, user-friendly & faster
+Its features include:
+
+- Simple, user-friendly, fast
 - No-reload navigation
-- Dark-mode to relax your eyes
+- Dark mode to relax your eyes
 - Groupable note sections
-- De-centralized user management
+- Decentralized user management
 - Auto grouping for uncategorized notes
-- Allowing to change font-type, size, line-height
-- Auto changing of note canvas size
-- Saving your time to jot down on-the-go notes
+- Option to change font type, size, line-height
+- Automatic resizing of note canvas
+- Designed to save your time to jot down on-the-go notes
 
 ## What were used to build this project
 
@@ -33,16 +35,16 @@ Notepaper is a multi-user cloud-based note management Single-Page Application (S
 - **[Livewire v-3](https://livewire.laravel.com/docs/quickstart)** : A SPA-like framework within Laravel ecosystem.
 - **[Flowbite](https://flowbite.com/)** : A modern UI component library based on Tailwind CSS.
 - **[MySQL](https://www.mysql.com/)** : A very popular tabular database system of SQL.
-- **[Authentication](https://laravel.com/docs/12.x/authentication#authenticating-users)** : Used session-based user authentication system  powered by Laravel.
+- **[Authentication](https://laravel.com/docs/12.x/authentication#authenticating-users)** : Session-based user authentication system  powered by Laravel.
 - **[Cloudflare](https://www.cloudflare.com/application-services/products/turnstile/)** : Used Cloudflare Turnstile tool to prevent spamming.
 
 
 ## Contributor
 
-The Solor Contributor of this project is : **[Ridoan Kabir](https://laravel.com/docs/contributions)**.
+The solo contributor of this project is : **[Ridoan Kabir](https://laravel.com/docs/contributions)**.
 
-See his other works: **[github](https://github.com/ridoan777)**
+See his other works: **[Github](https://github.com/ridoan777)**
 
-### <span style="color:#cc4444;">The developer would really appreciate if you fork his projects instead of cloning 😊</span>
+### <span style="color:#cc4444;">"The developer would really appreciate it if you fork his projects instead of cloning 😊"</span>
 <br>
 <br>
