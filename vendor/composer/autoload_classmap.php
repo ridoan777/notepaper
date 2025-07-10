@@ -16,6 +16,7 @@ return array(
     'App\\Livewire\\Overview' => $baseDir . '/app/Livewire/Overview.php',
     'App\\Models\\Bird' => $baseDir . '/app/Models/Bird.php',
     'App\\Models\\Bookmark' => $baseDir . '/app/Models/Bookmark.php',
+    'App\\Models\\Group' => $baseDir . '/app/Models/Group.php',
     'App\\Models\\Note' => $baseDir . '/app/Models/Note.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',

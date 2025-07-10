@@ -212,8 +212,8 @@ class ComposerStaticInit28cd54e6675b8fa4c3da7181222e4359
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'Whoops\\' => 
         array (
@@ -619,6 +619,7 @@ class ComposerStaticInit28cd54e6675b8fa4c3da7181222e4359
         'App\\Livewire\\Overview' => __DIR__ . '/../..' . '/app/Livewire/Overview.php',
         'App\\Models\\Bird' => __DIR__ . '/../..' . '/app/Models/Bird.php',
         'App\\Models\\Bookmark' => __DIR__ . '/../..' . '/app/Models/Bookmark.php',
+        'App\\Models\\Group' => __DIR__ . '/../..' . '/app/Models/Group.php',
         'App\\Models\\Note' => __DIR__ . '/../..' . '/app/Models/Note.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
