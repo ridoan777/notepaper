@@ -44,15 +44,5 @@ The Solor Contributor of this project is : **[Ridoan Kabir](https://laravel.com/
 See his other works: **[github](https://github.com/ridoan777)**
 
 ### <span style="color:#cc4444;">The developer would really appreciate if you fork his projects instead of cloning 😊</span>
-
-
 <br>
 <br>
-<br>
-<br>
-<br>
-<style>
-*{
-    text-decoration: none !important;
-}
-</style>
